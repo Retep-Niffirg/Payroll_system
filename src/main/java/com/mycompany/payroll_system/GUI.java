@@ -26,11 +26,13 @@ public class GUI {
     private JFrame f;
     private JMenuBar M;
     private JMenu m;
+    private JMenu subm;
     private JMenuItem i;
     private JTable t = new JTable(empModel);
     private JScrollPane s;
     private payrollTable pt;
     private JTabbedPane tp = new JTabbedPane(JTabbedPane.BOTTOM, JTabbedPane.SCROLL_TAB_LAYOUT);
+    JPopupMenu p;
     
     public GUI() {
         f = new JFrame("Employee Attendance");
@@ -40,6 +42,8 @@ public class GUI {
     }
     public void show() {
         menuBar();
+        addTab();
+        empLoad();
         f.setLocationRelativeTo(null);
         f.setVisible(true);
     }
@@ -50,27 +54,57 @@ public class GUI {
         M = new JMenuBar();
         
         m = new JMenu("File");
-        i = new JMenuItem("Add pane");
-        i.addActionListener((ActionEvent e) -> {
-            addTab();
-        });
-        m.add(i);
+        subm = new JMenu("Manage Employees");
+        m.add(subm);
         
         i = new JMenuItem("Add Employee");
         i.addActionListener((ActionEvent e) -> {
             addEmp();
         });
-        m.add(i);
-        m.addSeparator();
+        subm.add(i);
+        subm.addSeparator();
         
-        i = new JMenuItem("Save");
+        i = new JMenuItem("Save Employee File");
         i.addActionListener((ActionEvent e) -> {
             empSave();
         });
-        m.add(i);
+        subm.add(i);
+        
+        i = new JMenuItem("Load Employee File");
+        i.addActionListener((ActionEvent e) -> {
+            empLoad();
+        });
+        subm.add(i);
         
         M.add(m);
         f.setJMenuBar(M);
+    }
+    
+    public  void popUpMenu(){
+        p = new JPopupMenu();       
+        
+        i = new JMenuItem("Delete");
+        i.addActionListener ((ActionEvent e) -> {
+            delRow();
+        });
+        p.add(i);
+        
+        t.addMouseListener(new MouseAdapter() { 
+            @Override
+            public void mousePressed(MouseEvent e) {
+                Show(e);
+            }
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                Show(e);
+            }
+            private void Show(MouseEvent e) {
+                if (e.isPopupTrigger()) {
+                    p.show(e.getComponent(),
+                    e.getX(), e.getY());
+                }
+            }
+        });
     }
     
     public void addTab() {
@@ -80,7 +114,15 @@ public class GUI {
         tp.addTab("filename", s);
     }
     
-    public void addRow(String id, String name, double salary, LocalDate hireDate){
+    public void delRow() {
+        if (t.getSelectedRow() != -1) {
+            empModel.removeRow(t.convertRowIndexToModel(t.getSelectedRow()));
+        } else {
+            
+        }  
+    } 
+    
+    public void addRowEmp(String id, String name, double salary, LocalDate hireDate){
         e = new employee(id, name, salary, hireDate);
         Object arr[] = {e.getId(), e.getName(), e.getSalary(), e.getHireDate()};
         empModel.addRow(arr);
@@ -163,9 +205,7 @@ public class GUI {
                             .addGroup(Group.createParallelGroup(GroupLayout.Alignment.TRAILING)
                                 .addComponent(year))
                         )
-                        .addComponent(add))
-                    
-                        
+                        .addComponent(add)) 
             );
             Group.setVerticalGroup(
                 Group.createSequentialGroup()
@@ -194,11 +234,11 @@ public class GUI {
                 LocalDate dateAdd;
                 
                 if (check != -1) {
-                    confirm = JOptionPane.showConfirmDialog(f, "This ID is already assigned to " + empModel.getValueAt(check, 1) + ".\n Replace the entry?", "Lost and Found", JOptionPane.YES_NO_OPTION);
+                    confirm = JOptionPane.showConfirmDialog(f, "This ID is already assigned to " + empModel.getValueAt(check, 1) + ".\n Replace the entry?", "ID Conflict", JOptionPane.YES_NO_OPTION);
                 } else {
                     try {
                         dateAdd = time.dateConv(day.getText(), month.getText(), year.getText());
-                        addRow(id.getText(), name.getText(), Double.parseDouble(salary.getText()), dateAdd);
+                        addRowEmp(id.getText(), name.getText(), Double.parseDouble(salary.getText()), dateAdd);
                         f1.setVisible(false);
                     } catch (NumberFormatException ex) {
                         JOptionPane.showMessageDialog(f, "Please enter a number for salary.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -208,22 +248,18 @@ public class GUI {
                 }
                 
                 switch (confirm) {
-                    case -1: 
-                        break;
                     case 0:
                         try {
                             dateAdd = time.dateConv(day.getText(), month.getText(), year.getText());
                             empModel.setValueAt(dateAdd, check, 3); 
                             empModel.setValueAt(Double.parseDouble(salary.getText()), check, 2); 
-                            empModel.setValueAt(name.getText(), check, 1); 
+                            empModel.setValueAt(name.getText(), check, 1);
                             f1.setVisible(false);
                         } catch (NumberFormatException ex) {
                             JOptionPane.showMessageDialog(f, "Please enter a number for salary.", "Error", JOptionPane.ERROR_MESSAGE);
                         } catch (DateTimeException ex) {
                             JOptionPane.showMessageDialog(f, "Please enter a valid date.", "Error", JOptionPane.ERROR_MESSAGE);
                         }
-                        break;
-                    case 1:
                         break;
                     default:
                         break;
@@ -254,5 +290,26 @@ public class GUI {
             data.add(new String[]{String.valueOf(empModel.getValueAt(j, 0)), String.valueOf(empModel.getValueAt(j, 1)), String.valueOf(empModel.getValueAt(j, 2)), String.valueOf(empModel.getValueAt(j, 3))});
         }
         e.empSave(data);
+    }
+    
+    public void empLoad() {
+        List<String[]> data = e.empLoad();
+        int confirm = 0;
+        
+        if (empModel.getRowCount() != 0) {
+            confirm = JOptionPane.showConfirmDialog(f, "This will discard ALL UNSAVED CHANGES. \nContinue loading?", "Load", JOptionPane.YES_NO_OPTION);    
+        }
+        
+        switch (confirm) {
+            case 0:
+                empModel.setRowCount(0);
+                for (String[] data1 : data) {
+                    addRowEmp(data1[0], data1[1], Double.parseDouble(data1[2]), LocalDate.parse(data1[3]));
+                }
+                break;
+            default:
+                break;
+        }
+        
     }
 }

@@ -1,6 +1,7 @@
 package com.mycompany.payroll_system.model;
 import com.opencsv.bean.*;
 import com.opencsv.*;
+import com.opencsv.exceptions.*;
 import java.io.*;
 import java.time.*;
 import java.util.*;
@@ -58,5 +59,23 @@ public class employee {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    
+    public List<String[]> empLoad() {
+        List<String[]>  data = new ArrayList<>();
+        try (CSVReader r = new CSVReaderBuilder(new FileReader(empFile))
+                .withCSVParser(new com.opencsv.CSVParserBuilder().build())
+                .withSkipLines(1)
+                .build()) {
+            String[] dataLine;
+            
+            while ((dataLine = r.readNext()) != null) {
+                data.add(dataLine);
+            } 
+        } catch (IOException | CsvException e) {
+            e.printStackTrace();
+        }
+        
+        return data;
     }
 }
