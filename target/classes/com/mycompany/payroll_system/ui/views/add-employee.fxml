@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<DialogPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.payroll_system.ui.controllers.AddEmployeeController" styleClass="employee-dialog">
+ <content><VBox styleClass="dialog-content" spacing="18">
+  <GridPane hgap="22" vgap="18">
+    <columnConstraints><ColumnConstraints hgrow="ALWAYS"/><ColumnConstraints hgrow="ALWAYS"/></columnConstraints>
+    <VBox spacing="8" GridPane.columnIndex="0" GridPane.rowIndex="0"><Label text="Employee ID"/><TextField fx:id="idField" promptText="Enter employee ID"/><Label fx:id="duplicateHint" text="Duplicate IDs will prompt before replacement." styleClass="muted-small" wrapText="true"/></VBox>
+    <VBox spacing="8" GridPane.columnIndex="1" GridPane.rowIndex="0"><Label text="Employee name"/><TextField fx:id="nameField" promptText="Enter full name"/></VBox>
+    <VBox spacing="8" GridPane.columnIndex="0" GridPane.rowIndex="1"><Label text="Salary"/><TextField fx:id="salaryField" promptText="0.00"/></VBox>
+    <VBox spacing="8" GridPane.columnIndex="1" GridPane.rowIndex="1"><Label text="Hire date"/><DatePicker fx:id="hireDatePicker" promptText="dd/mm/yyyy" maxWidth="Infinity"/></VBox>
+  </GridPane>
+  <Label fx:id="feedbackLabel" text="Enter the employee information used by the current application." styleClass="form-feedback" wrapText="true"/>
+ </VBox></content>
+</DialogPane>

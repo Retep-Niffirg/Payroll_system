@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<VBox xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.payroll_system.ui.controllers.PayrollTableController" styleClass="workspace-inner" spacing="22">
+  <VBox styleClass="concept-banner" spacing="6"><Label text="Payroll layout" styleClass="section-title"/><Label text="This screen visualizes fields in payrollTable.java. Calculations, editing, and persistence are not implemented by this prototype." styleClass="muted" wrapText="true"/></VBox>
+  <VBox styleClass="card" VBox.vgrow="ALWAYS" spacing="0"><HBox styleClass="card-heading"><VBox spacing="7"><Label text="Payroll records" styleClass="section-title"/><Label text="Fields available in the current payroll model" styleClass="muted"/></VBox></HBox>
+    <TableView fx:id="payrollTable" VBox.vgrow="ALWAYS" styleClass="data-table"><columns>
+      <TableColumn text="EMPLOYEE NAME" prefWidth="185"/><TableColumn text="SALARY" prefWidth="115"/><TableColumn text="SHORTAGES" prefWidth="105"/><TableColumn text="CASH ADVANCE" prefWidth="115"/><TableColumn text="TRANSPORT" prefWidth="105"/><TableColumn text="TARDINESS" prefWidth="105"/><TableColumn text="UNIFORM" prefWidth="100"/><TableColumn text="OTHER DEDUCTIONS" prefWidth="145"/><TableColumn text="NET PAY" prefWidth="110"/>
+    </columns></TableView>
+    <HBox styleClass="card-footer"><Label text="No payroll calculations or persistence are available." styleClass="muted-small"/></HBox>
+  </VBox>
+</VBox>

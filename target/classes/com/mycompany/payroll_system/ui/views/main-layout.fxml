@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.payroll_system.ui.controllers.MainController" styleClass="app-root">
+  <left><VBox prefWidth="310" styleClass="sidebar" spacing="0">
+    <VBox styleClass="brand" spacing="5"><Label text="⌂" styleClass="brand-icon"/><Label text="Payroll System" styleClass="brand-title"/></VBox>
+    <Label text="WORKSPACE" styleClass="nav-caption"/>
+    <Button fx:id="employeeNav" text="♙   Employee Management" onAction="#showEmployees" styleClass="nav-button nav-active" maxWidth="Infinity"/>
+    <Button fx:id="payrollNav" text="▱   Payroll Table" onAction="#showPayroll" styleClass="nav-button" maxWidth="Infinity"/>
+    <Region VBox.vgrow="ALWAYS"/>
+    <VBox styleClass="local-card" spacing="10"><Label text="Local data" styleClass="local-title"/><Label text="Employee records use the application's existing CSV-writing workflow." wrapText="true" styleClass="local-copy"/></VBox>
+  </VBox></left>
+  <center><BorderPane>
+    <top><VBox styleClass="page-header" spacing="12"><Label fx:id="breadcrumb" text="Payroll System   ›   Employee Management" styleClass="breadcrumb"/><Label fx:id="pageTitle" text="Employee Management" styleClass="page-title"/><Label fx:id="pageDescription" text="Manage the employee records supported by the current application." styleClass="page-description"/></VBox></top>
+    <center><StackPane fx:id="pageHost" styleClass="workspace"/></center>
+  </BorderPane></center>
+</BorderPane>

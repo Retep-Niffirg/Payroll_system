@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<VBox xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.payroll_system.ui.controllers.EmployeeManagementController" styleClass="workspace-inner" spacing="22">
+  <HBox alignment="CENTER_RIGHT" spacing="12"><Region HBox.hgrow="ALWAYS"/><Button text="Save" onAction="#saveEmployees" styleClass="secondary-button"/><Button text="＋   Add employee" onAction="#openAddEmployee" styleClass="primary-button"/></HBox>
+  <VBox styleClass="card" VBox.vgrow="ALWAYS" spacing="0">
+    <HBox alignment="CENTER_LEFT" styleClass="card-heading"><VBox spacing="7"><Label text="Employee records" styleClass="section-title"/><Label fx:id="recordDescription" text="No employee records" styleClass="muted"/></VBox><Region HBox.hgrow="ALWAYS"/><TextField fx:id="searchField" promptText="⌕   Search ID or name" styleClass="search-field"/></HBox>
+    <TableView fx:id="employeeTable" VBox.vgrow="ALWAYS" styleClass="data-table"><columns>
+      <TableColumn fx:id="idColumn" text="EMPLOYEE ID" prefWidth="250"/>
+      <TableColumn fx:id="nameColumn" text="EMPLOYEE NAME" prefWidth="460"/>
+      <TableColumn fx:id="salaryColumn" text="SALARY" prefWidth="190"/>
+      <TableColumn fx:id="dateColumn" text="HIRE DATE" prefWidth="230"/>
+    </columns><placeholder><VBox alignment="CENTER" spacing="16" styleClass="empty-state"><Label text="♙" styleClass="empty-icon"/><Label text="No employee records" styleClass="empty-title"/><Label text="Add an employee to begin building the local employee table." styleClass="muted"/><Button text="＋   Add employee" onAction="#openAddEmployee" styleClass="primary-button"/></VBox></placeholder></TableView>
+    <HBox styleClass="card-footer"><Label text="Employee data fields match the current application model." styleClass="muted-small"/><Region HBox.hgrow="ALWAYS"/><Label fx:id="countLabel" text="Showing 0" styleClass="muted-small"/></HBox>
+  </VBox>
+</VBox>
