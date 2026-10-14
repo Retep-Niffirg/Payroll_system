@@ -21,6 +21,14 @@ public class GUI {
             public boolean setCellSelectionEnabled () { 
                 return true;
             }
+        @Override
+            public Class getColumnClass(int Index) { 
+                Class c = String.class;
+                if (Index == 3) {
+                    return Boolean.class;
+                }
+                return c;
+            }
     };
     
     private JFrame f;
@@ -42,7 +50,7 @@ public class GUI {
     }
     public void show() {
         menuBar();
-        addTab();
+        addTab(e.getFile());
         empLoad();
         f.setLocationRelativeTo(null);
         f.setVisible(true);
@@ -107,11 +115,11 @@ public class GUI {
         });
     }
     
-    public void addTab() {
+    public void addTab(String filename) {
         s = new JScrollPane(t);
         t.setAutoCreateRowSorter(true);
         
-        tp.addTab("filename", s);
+        tp.addTab(filename, s);
     }
     
     public void delRow() {
@@ -122,9 +130,9 @@ public class GUI {
         }  
     } 
     
-    public void addRowEmp(String id, String name, double salary, LocalDate hireDate){
-        e = new employee(id, name, salary, hireDate);
-        Object arr[] = {e.getId(), e.getName(), e.getSalary(), e.getHireDate()};
+    public void addRowEmp(String id, String name, double salary, boolean isManager, LocalDate hireDate){
+        e = new employee(id, name, salary, isManager , hireDate);
+        Object arr[] = {e.getId(), e.getName(), e.getSalary(), e.getManager(), e.getHireDate()};
         empModel.addRow(arr);
     }
     
@@ -144,6 +152,7 @@ public class GUI {
         JTextField day = new JTextField("dd");
         JTextField month = new JTextField("mm");
         JTextField year = new JTextField("yyyy");
+        JCheckBox isManager = new JCheckBox("Is this employee a Manager?");
         
         JButton add = new JButton("ADD EMPLOYEE");
         add.setEnabled(false);
@@ -205,6 +214,7 @@ public class GUI {
                             .addGroup(Group.createParallelGroup(GroupLayout.Alignment.TRAILING)
                                 .addComponent(year))
                         )
+                        .addComponent(isManager)
                         .addComponent(add)) 
             );
             Group.setVerticalGroup(
@@ -223,7 +233,9 @@ public class GUI {
                         .addComponent(day)
                         .addComponent(month)
                         .addComponent(year))
-                    .addGroup(Group.createParallelGroup(GroupLayout.Alignment.CENTER) 
+                    .addGroup(Group.createParallelGroup(GroupLayout.Alignment.BASELINE) 
+                        .addComponent(isManager))
+                    .addGroup(Group.createParallelGroup(GroupLayout.Alignment.LEADING) 
                         .addComponent(add))
             );
             
@@ -238,7 +250,7 @@ public class GUI {
                 } else {
                     try {
                         dateAdd = time.dateConv(day.getText(), month.getText(), year.getText());
-                        addRowEmp(id.getText(), name.getText(), Double.parseDouble(salary.getText()), dateAdd);
+                        addRowEmp(id.getText(), name.getText(), Double.parseDouble(salary.getText()), isManager.isSelected() , dateAdd);
                         f1.setVisible(false);
                     } catch (NumberFormatException ex) {
                         JOptionPane.showMessageDialog(f, "Please enter a number for salary.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -251,7 +263,8 @@ public class GUI {
                     case 0:
                         try {
                             dateAdd = time.dateConv(day.getText(), month.getText(), year.getText());
-                            empModel.setValueAt(dateAdd, check, 3); 
+                            empModel.setValueAt(dateAdd, check, 4); 
+                            empModel.setValueAt(isManager.isSelected(), check, 3); 
                             empModel.setValueAt(Double.parseDouble(salary.getText()), check, 2); 
                             empModel.setValueAt(name.getText(), check, 1);
                             f1.setVisible(false);
@@ -269,7 +282,7 @@ public class GUI {
             });
             p.setLayout(Group);
             f1.add(p);
-            f1.setSize(300, 200);
+            f1.setSize(300, 220);
             f1.setLocationRelativeTo(f);
             f1.setVisible(true);
     }
@@ -287,7 +300,11 @@ public class GUI {
         List<String[]>  data = new ArrayList<>();
         data.add(e.getEmpHeader());
         for (int j = 0; j < empModel.getRowCount(); j++) {
-            data.add(new String[]{String.valueOf(empModel.getValueAt(j, 0)), String.valueOf(empModel.getValueAt(j, 1)), String.valueOf(empModel.getValueAt(j, 2)), String.valueOf(empModel.getValueAt(j, 3))});
+            data.add(new String[]{String.valueOf(empModel.getValueAt(j, 0)), 
+                                  String.valueOf(empModel.getValueAt(j, 1)), 
+                                  String.valueOf(empModel.getValueAt(j, 2)), 
+                                  String.valueOf(empModel.getValueAt(j, 3)),
+                                  String.valueOf(empModel.getValueAt(j, 4))});
         }
         e.empSave(data);
     }
@@ -304,7 +321,7 @@ public class GUI {
             case 0:
                 empModel.setRowCount(0);
                 for (String[] data1 : data) {
-                    addRowEmp(data1[0], data1[1], Double.parseDouble(data1[2]), LocalDate.parse(data1[3]));
+                    addRowEmp(data1[0], data1[1], Double.parseDouble(data1[2]), Boolean.parseBoolean(data1[3]), LocalDate.parse(data1[4]));
                 }
                 break;
             default:
