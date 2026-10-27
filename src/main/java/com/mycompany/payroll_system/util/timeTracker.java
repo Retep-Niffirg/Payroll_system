@@ -1,9 +1,12 @@
 package com.mycompany.payroll_system.util;
 import java.time.*;
+import java.time.format.*;
+import java.util.Locale;
 
 public class timeTracker {
     private LocalTime timeIn;
     private LocalTime lateIn;
+    private DateTimeFormatter dtf = DateTimeFormatter.ofPattern("h:mm a", Locale.ENGLISH);
     
     public timeTracker(LocalTime timeIn, LocalTime lateIn) {
         this.timeIn = timeIn;
@@ -14,7 +17,7 @@ public class timeTracker {
         this(LocalTime.of(6, 0), LocalTime.of(6, 15)); 
     }
     
-    public char clockIn(LocalDateTime empLog) {
+    public char timeIn(LocalTime empLog) {
         LocalTime empLogTime = LocalTime.of(empLog.getHour(), empLog.getMinute());
         
         if (empLogTime.isAfter(lateIn)) {
@@ -32,6 +35,10 @@ public class timeTracker {
     
     public LocalTime getLateIn() {
         return lateIn;
+    }
+    
+    public DateTimeFormatter getFormat() {
+        return dtf;
     }
     
     public LocalDate dateConv(String day, String month, String year) {

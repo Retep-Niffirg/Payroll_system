@@ -9,6 +9,7 @@ import java.util.*;
 public class employee {
     private String empHeader[] = {"ID", "Name", "Salary", "Manager" ,"Date Hired"};
     private String empFile = "employee.csv";
+    private settings set = new settings();
     
     @CsvBindByName (column = "ID", required = true)
     private String id;
@@ -64,18 +65,15 @@ public class employee {
         return empHeader;
     }
     
-    public void empSave(List<String[]> data) {
-        try (CSVWriter w = new CSVWriter(new FileWriter(empFile))) {
-            w.writeAll(data);
-            
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void empSave(List<String[]> data) throws IOException {
+        CSVWriter w = new CSVWriter(new FileWriter(set.getDir() + empFile));
+        w.writeAll(data);
+        w.close();
     }
     
     public List<String[]> empLoad() {
         List<String[]>  data = new ArrayList<>();
-        try (CSVReader r = new CSVReaderBuilder(new FileReader(empFile))
+        try (CSVReader r = new CSVReaderBuilder(new FileReader(set.getDir() + empFile))
                 .withCSVParser(new com.opencsv.CSVParserBuilder().build())
                 .withSkipLines(1)
                 .build()) {
@@ -89,5 +87,24 @@ public class employee {
         }
         
         return data;
+    }
+    
+    public String[] empDet(String id) {
+        try (CSVReader r = new CSVReaderBuilder(new FileReader(set.getDir() + empFile))
+                .withCSVParser(new com.opencsv.CSVParserBuilder().build())
+                .withSkipLines(1)
+                .build()) {
+            String[] dataLine;
+            
+            while ((dataLine = r.readNext()) != null) {
+                if (dataLine[0].equals(id)) {
+                    return dataLine;
+                }
+            } 
+        } catch (IOException | CsvException e) {
+            e.printStackTrace();
+        }
+        
+        return null;
     }
 }
